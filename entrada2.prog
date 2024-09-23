@@ -1,0 +1,11 @@
+programa exemplo {
+    inteiro a = 10;
+    real b = 20.5;
+    se (a < b) {
+        escreva("a é menor que b");
+    }
+    // Isto é um comentário de linha
+    /*
+       Isto é um comentário de bloco
+    */
+}
