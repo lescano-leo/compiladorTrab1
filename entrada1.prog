@@ -1,0 +1,7 @@
+programa {
+    inteiro a = 10;
+    /* Comentário de bloco */
+    enquanto (a > 0) {
+        a--;
+    }
+}
