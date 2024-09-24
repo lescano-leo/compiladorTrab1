@@ -69,7 +69,7 @@ class AnalisadorLexico:
             elif self.__caracter.isdigit():
                 self.__q2_numero()
             # Operadores
-            elif self.__caracter in ['+', '-', '*', '=', '<', '>', '/']:
+            elif self.__caracter in ['+', '-', '*', '=', '<', '>', '/', '!', '&', '|']:
                 self.__q3_operador()
             # Delimitadores (parênteses, chaves, etc.)
             elif self.__caracter in [';', ',', '(', ')', '{', '}', '[', ']']:
@@ -127,16 +127,45 @@ class AnalisadorLexico:
     def __q3_operador(self):
         """Estado para operadores."""
         operador = self.__caracter
-        if operador in ['+', '-', '*', '=', '<', '>']:
-            self.__tabela_de_simbolos.append(('Operador', operador, self.__numero_linha))
+        proximo_caracter = self.__obter_caractere()
+
+        # Verificar operadores compostos
+        if operador == '=' and proximo_caracter == '=':
+            self.__tabela_de_simbolos.append(('Operador', '==', self.__numero_linha))
+        elif operador == '!' and proximo_caracter == '=':
+            self.__tabela_de_simbolos.append(('Operador', '!=', self.__numero_linha))
+        elif operador == '>' and proximo_caracter == '=':
+            self.__tabela_de_simbolos.append(('Operador', '>=', self.__numero_linha))
+        elif operador == '<' and proximo_caracter == '=':
+            self.__tabela_de_simbolos.append(('Operador', '<=', self.__numero_linha))
+        elif operador == '&' and proximo_caracter == '&':
+            self.__tabela_de_simbolos.append(('Operador', '&&', self.__numero_linha))
+        elif operador == '|' and proximo_caracter == '|':
+            self.__tabela_de_simbolos.append(('Operador', '||', self.__numero_linha))
+        elif operador == '+' and proximo_caracter == '+':
+            self.__tabela_de_simbolos.append(('Operador', '++', self.__numero_linha))
+        elif operador == '-' and proximo_caracter == '-':
+            self.__tabela_de_simbolos.append(('Operador', '--', self.__numero_linha))
+        elif operador == '.' and proximo_caracter.isdigit():
+            self.__cabeca -= 1  # Recuar a cabeça de leitura para tratar como número real
+            self.__q2_numero()
         elif operador == '/':
-            proximo_caracter = self.__obter_caractere()
-            if proximo_caracter == '/' or proximo_caracter == '*':
-                self.__cabeca -= 1  # Recuar a cabeça de leitura para tratar como comentário
+            if proximo_caracter == '/':
+                self.__cabeca -= 1
+                self.__q4_comentario()
+            elif proximo_caracter == '*':
+                self.__cabeca -= 1
                 self.__q4_comentario()
             else:
                 self.__tabela_de_simbolos.append(('Operador', operador, self.__numero_linha))
-                self.__cabeca -= 1  # Recuar a cabeça de leitura para tratar o próximo caractere
+                self.__cabeca -= 1
+        else:
+            # Operadores simples
+            if operador in ['+', '-', '*', '=', '<', '>', '/', '.']:
+                self.__tabela_de_simbolos.append(('Operador', operador, self.__numero_linha))
+            else:
+                self.__erros_lexicos.append(f'Operador inválido "{operador}" na linha {self.__numero_linha}')
+            self.__cabeca -= 1  # Recuar a cabeça de leitura para tratar o próximo caractere
 
     def __q5_string(self):
         """Estado para strings."""

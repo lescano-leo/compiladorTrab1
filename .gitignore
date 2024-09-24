@@ -1,4 +1,8 @@
 __pycache__/
 erros1.lex
 tokens1.lex
+erros2.lex
+tokens2.lex
+erros3.lex
+tokens3.lex
 arquivoDeTeste.py
