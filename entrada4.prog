@@ -1,0 +1,10 @@
+a = 10
+b = 20
+c = a + b
+d = "string não fechada
+e = 'caractere não fechado
+f = @
+g = 123abc
+h = 45.67.89
+i = "string válida"
+j = 'c'

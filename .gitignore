@@ -5,4 +5,6 @@ erros2.lex
 tokens2.lex
 erros3.lex
 tokens3.lex
+erros4.lex
+tokens4.lex
 arquivoDeTeste.py
