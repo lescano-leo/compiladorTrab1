@@ -82,10 +82,11 @@ class AnalisadorLexico:
             elif self.__caracter == '"':
                 self.__q5_string()
             # Caractere constante
+            
             elif self.__caracter == "'":
                 self.__q6_caractere()
             # Simbolos ASCII de 32 a 126
-            elif 32 <= ord(self.__caracter) <= 126:
+            elif 33 <= ord(self.__caracter) <= 126:
                 self.__tabela_de_simbolos.append(('Símbolo ASCII', self.__caracter, self.__numero_linha))
             # Espaços e quebras de linha
             elif self.__caracter.isspace():
@@ -184,21 +185,20 @@ class AnalisadorLexico:
             elif self.__caracter == self.__fim_linha or self.__cabeca >= len(self.__fita):
                 self.__erros_lexicos.append(f'String não fechada na linha {self.__numero_linha}')
                 break
-        self.__tabela_de_simbolos.append(('Cadeia de Caracteres', string, self.__numero_linha))
+        self.__tabela_de_simbolos.append(('Cadeia de Constante', string, self.__numero_linha))
         
     def __q6_caractere(self):
         """Estado para caracteres."""
-        caractere = self.__caracter
-        proximo_caracter = self.__obter_caractere()
-        caractere += self.__caracter
-        if self.__caracter == "'":
-            self.__tabela_de_simbolos.append(('Caractere Constante', caractere, self.__numero_linha))
-        else:
-            self.__erros_lexicos.append(f'Caractere constante não fechado na linha {self.__numero_linha}')
-            while self.__caracter != "'" and self.__caracter != self.__fim_linha and self.__cabeca < len(self.__fita):
-                self.__caracter = self.__obter_caractere()
-                caractere += self.__caracter
-            self.__tabela_de_simbolos.append(('Caractere Constante', caractere, self.__numero_linha))
+        string = self.__caracter
+        while True:
+            self.__caracter = self.__obter_caractere()
+            string += self.__caracter
+            if self.__caracter == "'":
+                break
+            elif self.__caracter == self.__fim_linha or self.__cabeca >= len(self.__fita):
+                self.__erros_lexicos.append(f'Caracter não fechada na linha {self.__numero_linha}')
+                break
+        self.__tabela_de_simbolos.append(('Caracter de Constante', string, self.__numero_linha))
 
     def obter_tabela_tokens(self):
         self.__q0()
